@@ -1,0 +1,14 @@
+# Poetry
+.venv/
+poetry.lock
+
+# Django
+__pycache__/
+*.pyc
+*.sqlite3
+
+# PyCharm
+.idea/
+
+# Env
+.env
