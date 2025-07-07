@@ -1,6 +1,6 @@
 # Poetry
 .venv/
-poetry.lock
+
 
 # Django
 __pycache__/
