@@ -3,7 +3,13 @@ from .serializers import UserProfileSerializer
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Payment
-from .serializers import PaymentSerializer
+from .serializers import PaymentSerializer, UserRegisterSerializer
+
+
+class UserRegisterAPIView(generics.CreateAPIView):
+    serializer_class = UserRegisterSerializer
+    permission_classes = [permissions.AllowAny]
+
 
 
 class PaymentViewSet(viewsets.ReadOnlyModelViewSet):
