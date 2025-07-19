@@ -42,8 +42,10 @@ class LessonDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = LessonSerializer
 
     def get_permissions(self):
-        if self.request.method in ['PUT', 'PATCH', 'GET']:
-            return [IsAuthenticated() | IsModerator()]
+        if self.request.method in ['PUT', 'PATCH']:
+            return [IsAuthenticated(), IsOwner()]  # Только владелец может редактировать
+        elif self.request.method == 'GET':
+            return [IsAuthenticated() | IsModerator()]  # Модератор или владелец
         elif self.request.method == 'DELETE':
-            return [IsAuthenticated()]  # Только авторизованные, не модераторы
+            return [IsAuthenticated(), IsOwner()]  # Только владелец может удалить
         return [IsAuthenticated()]
