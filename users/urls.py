@@ -9,7 +9,7 @@ router.register(r'payments', PaymentViewSet, basename='payment')
 router.register(r'users', UserViewSet, basename='customuser')
 
 urlpatterns = [
-    path('profile/', UserProfileUpdateView.as_view(), name='user-profile'),
+    path('profile/<int:pk>/', UserProfileUpdateView.as_view(), name='user-profile'),
     path('', include(router.urls)),
     path('register/', UserRegisterAPIView.as_view(), name='user-register'),
 ]
