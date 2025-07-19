@@ -35,3 +35,9 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         validated_data.pop('password2')
         user = CustomUser.objects.create_user(**validated_data)
         return user
+
+
+class UserLimitedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'email', 'city']
