@@ -39,7 +39,7 @@ class LessonListCreateAPIView(generics.ListCreateAPIView):
     def get_permissions(self):
         if self.request.method == 'POST':
             return [IsAuthenticated()]  # Только авторизованные (без модераторов)
-        return [IsAuthenticated() | IsModerator()]
+        return [IsAuthenticated(), IsModerator()]
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)

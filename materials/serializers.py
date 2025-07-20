@@ -10,6 +10,11 @@ class LessonSerializer(serializers.ModelSerializer):
         model = Lesson
         fields = '__all__'
 
+    def create(self, validated_data):
+        validated_data.pop('owner', None)  # убрать owner, если он передан, но нет в модели
+        return super().create(validated_data)
+
+
 class CourseSerializer(serializers.ModelSerializer):
     lessons_count = serializers.SerializerMethodField()
     lessons = LessonSerializer(many=True, read_only=True)
