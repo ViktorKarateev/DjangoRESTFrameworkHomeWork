@@ -6,12 +6,15 @@ from users.permissions import IsModerator, IsOwner
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from .paginators import StandardResultsSetPagination
 
 
+pagination_class = StandardResultsSetPagination
 
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+    pagination_class = StandardResultsSetPagination
 
     def get_permissions(self):
         if self.action in ['update', 'partial_update', 'destroy']:
@@ -29,8 +32,9 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 
 class LessonListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Lesson.objects.all()
-    serializer_class = LessonSerializer
+    queryset = Lesson.objects.all()  # ← Исправлено
+    serializer_class = LessonSerializer  # ← Исправлено
+    pagination_class = StandardResultsSetPagination
 
     def get_permissions(self):
         if self.request.method == 'POST':
