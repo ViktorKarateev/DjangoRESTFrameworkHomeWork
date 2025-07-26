@@ -1,9 +1,8 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics, serializers
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from users.permissions import IsModerator, IsOwner
 from .models import Course, Lesson, Subscription
 from .paginators import StandardResultsSetPagination
@@ -62,8 +61,14 @@ class LessonDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
         return [IsAuthenticated()]
 
 
+class SubscriptionToggleSerializer(serializers.Serializer):
+    course_id = serializers.IntegerField()
+
+
 class SubscriptionToggleAPIView(APIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = SubscriptionToggleSerializer
+
 
     def post(self, request, *args, **kwargs):
         course_id = request.data.get('course_id')
