@@ -11,6 +11,7 @@ from .serializers import CourseSerializer, LessonSerializer
 
 pagination_class = StandardResultsSetPagination
 
+
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
@@ -18,9 +19,9 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ['update', 'partial_update', 'destroy']:
-            permission_classes = [IsAuthenticated & IsOwner]
+            permission_classes = [IsAuthenticated, IsOwner]
         elif self.action in ['retrieve', 'list']:
-            permission_classes = [IsAuthenticated | IsModerator]
+            permission_classes = [IsAuthenticated, IsModerator]
         elif self.action == 'create':
             permission_classes = [IsAuthenticated]
         else:
@@ -32,8 +33,8 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 
 class LessonListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Lesson.objects.all()  # ← Исправлено
-    serializer_class = LessonSerializer  # ← Исправлено
+    queryset = Lesson.objects.all()
+    serializer_class = LessonSerializer
     pagination_class = StandardResultsSetPagination
 
     def get_permissions(self):
@@ -42,7 +43,6 @@ class LessonListCreateAPIView(generics.ListCreateAPIView):
         else:
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
-
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -54,11 +54,11 @@ class LessonDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_permissions(self):
         if self.request.method in ['PUT', 'PATCH']:
-            return [IsAuthenticated(), IsOwner()]  # Только владелец может редактировать
+            return [IsAuthenticated(), IsOwner()]
         elif self.request.method == 'GET':
-            return [IsAuthenticated() | IsModerator()]  # Модератор или владелец
+            return [IsAuthenticated(), IsModerator()]
         elif self.request.method == 'DELETE':
-            return [IsAuthenticated(), IsOwner()]  # Только владелец может удалить
+            return [IsAuthenticated(), IsOwner()]
         return [IsAuthenticated()]
 
 
