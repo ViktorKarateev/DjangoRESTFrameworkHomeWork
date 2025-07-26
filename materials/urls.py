@@ -14,4 +14,4 @@ urlpatterns = [
     path('lessons/<int:pk>/', LessonDetailAPIView.as_view(), name='lesson-detail'),
     #path('api/users/', include('users.urls')),
     path('subscriptions/toggle/', SubscriptionToggleAPIView.as_view(), name='subscription-toggle'),
-]
+] + router.urls

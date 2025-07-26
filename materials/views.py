@@ -1,13 +1,13 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
-from .models import Course, Lesson, Subscription
-from .serializers import CourseSerializer, LessonSerializer, SubscriptionSerializer
-from users.permissions import IsModerator, IsOwner
-from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
-from .paginators import StandardResultsSetPagination
+from rest_framework.views import APIView
 
+from users.permissions import IsModerator, IsOwner
+from .models import Course, Lesson, Subscription
+from .paginators import StandardResultsSetPagination
+from .serializers import CourseSerializer, LessonSerializer
 
 pagination_class = StandardResultsSetPagination
 
@@ -38,8 +38,11 @@ class LessonListCreateAPIView(generics.ListCreateAPIView):
 
     def get_permissions(self):
         if self.request.method == 'POST':
-            return [IsAuthenticated()]  # Только авторизованные (без модераторов)
-        return [IsAuthenticated(), IsModerator()]
+            permission_classes = [IsAuthenticated, ~IsModerator]
+        else:
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
+
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
