@@ -8,6 +8,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -22,7 +24,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'users',
     'materials',
-    'django_filters'
+    'django_filters',
+    'drf_spectacular',
+    'payments'
 ]
 
 MIDDLEWARE = [
@@ -102,6 +106,9 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
-    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated',],
-    'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework_simplejwt.authentication.JWTAuthentication',],
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated'],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
