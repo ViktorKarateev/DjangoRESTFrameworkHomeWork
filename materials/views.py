@@ -7,6 +7,9 @@ from users.permissions import IsModerator, IsOwner
 from .models import Course, Lesson, Subscription
 from .paginators import StandardResultsSetPagination
 from .serializers import CourseSerializer, LessonSerializer
+from payments.tasks import send_course_update_email
+from django.utils import timezone
+from datetime import timedelta
 
 pagination_class = StandardResultsSetPagination
 
@@ -29,6 +32,17 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+
+        # Проверка: обновлялся ли курс за последние 4 часа
+        if timezone.now() - instance.updated_at < timedelta(hours=4):
+            return
+
+        subscribers = Subscription.objects.filter(course=instance)
+        for sub in subscribers:
+            send_course_update_email.delay(sub.user.email, instance.name)
 
 
 class LessonListCreateAPIView(generics.ListCreateAPIView):
