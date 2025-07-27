@@ -26,7 +26,8 @@ INSTALLED_APPS = [
     'materials',
     'django_filters',
     'drf_spectacular',
-    'payments'
+    'payments.apps.PaymentsConfig',
+    'django_celery_beat'
 ]
 
 MIDDLEWARE = [
